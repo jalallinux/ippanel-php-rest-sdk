@@ -232,6 +232,10 @@ class Client
      */
     public function sendPattern($patternCode, $originator, $recipient, $values)
     {
+        foreach ($values as $key => $value) {
+            $values[$key] = (string) $value;
+        }
+        
         $res = $this->_httpClient->post("/v1/messages/patterns/send", [
             "pattern_code" => $patternCode,
             "originator" => $originator,
