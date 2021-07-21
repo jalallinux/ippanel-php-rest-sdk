@@ -1,127 +1,96 @@
-# IPPanel SMS php api SDK
+# IPPanel SMS Php API SDK
 
 This repository contains open source PHP client for `ippanel` api. Documentation can be found at: <http://docs.ippanel.com>.
 
-[![Build Status](https://travis-ci.org/ippanel/php-rest-sdk.svg?branch=master)](https://travis-ci.org/ippanel/php-rest-sdk)
+## نصب
 
-## Installation
-
-use with composer:
+نصب با کامپوزر:
 
 ```bash
 composer require jalallinux/ippanel-php-rest-sdk
 ```
 
-if you don't want to use composer, you can download it directly :
+اگر از کامپوزر استفاده نمیکنید. میتوانید پکیج را بصورت مستقیم دانلود کنید:
 
 ```bash
 wget https://github.com/jalallinux/ippanel-php-rest-sdk/archive/master.zip
 ```
 
-## Examples
+## نیازمندی‌ها
+جهت استفاده از این پکیج به موارد زیر نیاز خواهید داشت:
+- PHP >= 7.0
+- ext-curl
+- ext-json
 
-For using sdk, you have to create a client instance that gives you available methods on API
+## روش نصب
 
+برای نصب و استفاده از این پکیج می‌توانید از کمپوسر استفاده کنید:
+
+`composer require jalallinux/ippanel-php-rest-sdk`
+
+## متدها و نحوه استفاده
+
+### دریافت موجودی اعتبار
 ```php
-require 'autoload.php';
-
-// you api key that generated from panel
-$apiKey = "api-key";
-
-$client = new \IPPanel\Client($apiKey);
-
-...
-```
-
-### Credit check
-
-```php
-# return float64 type credit amount
 $credit = $client->getCredit();
-
 ```
 
-### Send one to many
-
-For sending sms, obviously you need `originator` number, `recipients` and `message`.
-
+### ارسال پیامک
 ```php
-$bulkID = $client->send(
-    "+9810001",          // originator
-    ["98912xxxxxxx"],    // recipients
-    "ippanel is awesome" // message
-);
+$originator = '5000012345'; // شماره فرستنده
+$recipients = ['09123456789', '09111111111']; // شماره‌های گیرنده
+$message = 'Hello world!'; // متن پیام
 
+$bulkId = $client->sendMessage($originator, $recipients, $message);
 ```
 
-If send is successful, a unique tracking code returned and you can track your message status with that.
-
-### Get message summery
-
+### دریافت اطلاعات پیام
 ```php
-$bulkID = "message-tracking-code";
+$message = $client->getMessage($bulkId);
 
-$message = $client->get_message($bulkID);
-
-echo $message->status;   // get message status
-echo $message->cost;     // get message cost
-echo $message->payback;  // get message payback
+echo $message->status;
+echo $message->cost;
+echo $message->sentAt;
 ```
 
-### Get message delivery statuses
-
+### دریافت وضعیت تحویل پیام
 ```php
-$bulkID = "message-tracking-code"
+[$statuses, $paginationInfo] = $client->fetchStatuses($bulkId);
 
-list($statuses, $paginationInfo) = $client->fetchStatuses($bulkID, 0, 10)
-
-// you can loop in messages statuses list
-foreach($statuses as status) {
-    echo sprintf("Recipient: %s, Status: %s", $status->recipient, $status->status);
+foreach ($statuses as $status) {
+    echo "Recipient: $status->recipient, Status: $status->status";
 }
 
-echo sprintf("Total: ", $paginationInfo->total);
+echo "Total: $paginationInfo->total";
 ```
 
-### Inbox fetch
-
-fetch inbox messages
-
+### دریافت پیام‌های ورودی
 ```php
-list($messages, $paginationInfo) = $client->fetchInbox(0, 10);
+[$messages, $paginationInfo] = $client->fetchInbox();
 
-foreach($messages as $message) {
-    echo sprintf("Received message %s from number %s in line %s", $message->message, $message->sender, $message->number);
+foreach ($messages as $message) {
+    echo "Received message $message->message from number $message->sender in line $message->number";
 }
 ```
 
-### Pattern create
-
-For sending messages with predefined pattern(e.g. verification codes, ...), you hav to create a pattern. a pattern at least have a parameter. parameters defined with `%param_name%`.
-
+### ایجاد الگوی پیام‌های پرتکرار
 ```php
-$pattern = $client->createPattern("%name% is awesome", False);
+$pattern = $client->createPattern('Your otp is %code%.');
 
-echo $pattern->code;
+echo $pattern->code; // شناسه الگو
 ```
 
-### Send with pattern
-
+### ارسال پیام با استفاده از الگو
 ```php
-$patternValues = [
-    "name" => "IPPANEL",
-];
+$patternCode = '12eb1cbb'; // شناسه الگو
+$originator = '5000012345'; // شماره فرستنده
+$recipient = '09123456789'; // شماره گیرنده
+$values = ['code' => 12345];
 
-$bulkID = $client->sendPattern(
-    "t2cfmnyo0c",    // pattern code
-    "+9810001",      // originator
-    "98912xxxxxxx",  // recipient
-    $patternValues,  // pattern values
-);
+$bulkId = $client->sendPattern($patternCode, $originator, $recipient, $values);
 ```
 
-### Error checking
-
+### مدیریت خطا
 ```php
 use IPPanel\Errors\Error;
 use IPPanel\Errors\HttpException;
@@ -129,15 +98,14 @@ use IPPanel\Errors\HttpException;
 try{
     $bulkID = $client->send("9810001", ["98912xxxxx"], "ippanel is awesome");
 } catch (Error $e) { // ippanel error
-    var_dump($e->unwrap()); // get real content of error
+    var_dump($e->unwrap()); // بدنه خطای اصلی
     echo $e->getCode();
 
-    // error codes checking
     if ($e->code() == ResponseCodes::ErrUnprocessableEntity) {
         echo "Unprocessable entity";
     }
 } catch (HttpException $e) { // http error
-    var_dump($e->getMessage()); // get stringified error
+    var_dump($e->getMessage()); // متن خطا
     echo $e->getCode();
 }
-```
+``` 
