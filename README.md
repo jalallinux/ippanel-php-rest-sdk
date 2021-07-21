@@ -9,13 +9,13 @@ This repository contains open source PHP client for `ippanel` api. Documentation
 use with composer:
 
 ```bash
-composer require ippanel/php-rest-sdk
+composer require jalallinux/ippanel-php-rest-sdk
 ```
 
 if you don't want to use composer, you can download it directly :
 
 ```bash
-wget https://github.com/ippanel/php-rest-sdk/archive/master.zip
+wget https://github.com/jalallinux/ippanel-php-rest-sdk/archive/master.zip
 ```
 
 ## Examples
