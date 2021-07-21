@@ -22,11 +22,6 @@ wget https://github.com/jalallinux/ippanel-php-rest-sdk/archive/master.zip
 - ext-curl
 - ext-json
 
-## روش نصب
-
-برای نصب و استفاده از این پکیج می‌توانید از کمپوسر استفاده کنید:
-
-`composer require jalallinux/ippanel-php-rest-sdk`
 
 ## متدها و نحوه استفاده
 
