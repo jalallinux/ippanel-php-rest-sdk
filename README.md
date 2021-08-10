@@ -36,7 +36,7 @@ $originator = '5000012345'; // شماره فرستنده
 $recipients = ['09123456789', '09111111111']; // شماره‌های گیرنده
 $message = 'Hello world!'; // متن پیام
 
-$bulkId = $client->sendMessage($originator, $recipients, $message);
+$bulkId = $client->send($originator, $recipients, $message);
 ```
 
 ### دریافت اطلاعات پیام
