@@ -29,7 +29,7 @@ wget https://github.com/jalallinux/ippanel-php-rest-sdk/archive/master.zip
 ‍‍‍```php
 use IPPanel\Client;
 
-$client = new Client('YOUR_API_KEY')
+$client = new Client('YOUR_API_KEY');
 ```
 
 ### دریافت موجودی اعتبار
