@@ -25,6 +25,13 @@ wget https://github.com/jalallinux/ippanel-php-rest-sdk/archive/master.zip
 
 ## متدها و نحوه استفاده
 
+### ایجاد کلاینت
+‍‍‍```php
+use IPPanel\Client;
+
+$client = new Client('YOUR_API_KEY')
+```
+
 ### دریافت موجودی اعتبار
 ```php
 $credit = $client->getCredit();
