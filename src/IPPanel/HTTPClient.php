@@ -80,14 +80,14 @@ class HTTPClient
      * @param string $url request url
      * @param mixed $data request data
      * @param array $params query parameters
-     * @param array $headers http headers 
+     * @param array $headers http headers
      * @return Models\Response parsed response
      * @throws Errors\HttpException
      * @throws Errors\Error
      */
     public function request(
-        $method = "GET",
         $url,
+        $method = "GET",
         $data = null,
         $params = null,
         $headers = null
@@ -130,7 +130,7 @@ class HTTPClient
 
         curl_close($curl);
 
-        // http status code is parsable or not 
+        // http status code is parsable or not
         if (!in_array($status, $this->_supportedStatusCodes)) {
             throw new Errors\HttpException("unexpected http error occurred", $status);
         }
@@ -152,7 +152,7 @@ class HTTPClient
     /**
      * Make http GET request
      * @param string $url request url
-     * @param array|Null $params query parameters 
+     * @param array|Null $params query parameters
      * @param array|Null $headers http headers
      * @return Models\Response parsed response
      * @throws Errors\HttpException
@@ -160,7 +160,7 @@ class HTTPClient
      */
     public function get($url, $params = Null, $headers = Null)
     {
-        return $this->request("GET", $url, Null, $params, $headers);
+        return $this->request($url, "GET", Null, $params, $headers);
     }
 
     /**
@@ -174,6 +174,6 @@ class HTTPClient
      */
     public function post($url, $data, $headers = null)
     {
-        return $this->request("POST", $url, $data, Null, $headers);
+        return $this->request($url, "POST", $data, Null, $headers);
     }
 }
